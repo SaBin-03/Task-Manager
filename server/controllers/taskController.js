@@ -28,11 +28,15 @@ export const addTask = async (req, res) => {
   }
 };
 
-export const statusUpdate = async (req, res) => {
-  const { status, priority } = req.body;
+export const Update = async (req, res) => {
+  const { task, description, status, priority, duedate } = req.body;
   const { id } = req.params;
   try {
-    await taskModel.findByIdAndUpdate(id, { $set: req.body }, { new: true });
+    await taskModel.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      { returnDocument: "after" },
+    );
 
     return res.status(200).json({ success: true, message: "updated" });
   } catch (error) {
@@ -43,31 +47,56 @@ export const statusUpdate = async (req, res) => {
   }
 };
 
+export const getTaskWithId = async (req, res) => {
+  const userid = req.UserId;
+  try {
+    const task = await taskModel.find({ userid });
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
 
-export const getTaskWithId = async(req,res) => {
-    const  userid = req.UserId;
-    try {
-        const task = await taskModel.find({userid});
-        if(!task){
-            return res.status(404).json({ success:false,message:"Task not found" });
-        }
-
-        return res.status(200).json({ success:true,task });
-
-    } catch (error) {
-        console.log(error);
+    return res.status(200).json({ success: true, task });
+  } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
-    }
-}
+  }
+};
 
-export const deleteTask = async (req,res) => {
-    const { id } = req.params;
-    try {
-        await taskModel.findByIdAndDelete(id);
-        return res.status(200).json({ success:true,message:"Task deleted successfully" });
-    } catch (error) {
-        console.log(error);
+export const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await taskModel.findByIdAndDelete(id);
+    return res
+      .status(200)
+      .json({ success: true, message: "Task deleted successfully" });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const filterTask = async (req, res) => {
+  const { status } = req.query;
+
+  if (!status) {
+    return res
+      .status(400)
+      .json({ success: false, message: "No Query Provided" });
+  }
+
+  try {
+    const data = await taskModel.find({ status });
+
+    if (!data) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task Not Found" });
     }
-}
+    return res.status(200).json({ success: true, data });
+  } catch (error) {
+    console.log(error);
+  }
+};
