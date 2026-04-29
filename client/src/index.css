@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Lato:wght@100;300;400;700;900&display=swap');
+@import "tailwindcss";
+
+
+@theme {
+  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fira Code", monospace;
+  --font-brand: "Lato", sans-serif;
+  --font-ubuntu: "Ubuntu", sans-serif;
+  --font-display: "Fjalla One", sans-serif;
+  --font-heading: "Plus Jakarta Sans", sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+
+}
+a.active .maindiv{
+  color:#2D68C4;
+  background: linear-gradient(
+    to right,
+    rgba(239, 246, 255, 0.4), /* from-blue-50/40 */
+    rgba(219, 234, 254, 0.5)  /* to-blue-100/50 */
+  );
+  border-right: 3px solid blue;
+
+}

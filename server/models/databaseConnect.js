@@ -6,7 +6,7 @@ dotenv.config();
 
 export const mongodbConnect = async() => {
     try {
-        await mongoose.connect(`${process.env.DB_URI}/users`);
+        await mongoose.connect(`${process.env.DB_URI}/user`);
         console.log("Database Connected Successfully");
     } catch (error) {
         console.log(error);

@@ -58,6 +58,9 @@ export const login = async (req, res) => {
   }
   try {
     const regsiteredUser = await UserModel.findOne({ email });
+    if(regsiteredUser.isVerified != true){
+        return res.status(400).json({ success:false,message:"User Not Verified to login" });
+    }
     if (!regsiteredUser) {
       return res
         .status(404)
@@ -104,7 +107,7 @@ export const login = async (req, res) => {
 export const emailVerification = async (req, res) => {
   try {
     const id = req.UserId;
-    await UserModel.findByIdAndUpdate(id, { isVerified: true, token: null });
+    await UserModel.findByIdAndUpdate(id, { isVerified: true });
 
     return res.status(200).json({ success: true, message: "Email Verified" });
   } catch (error) {
@@ -196,21 +199,23 @@ export const passChange = async (req, res) => {
       .json({ success: false, message: "Password Doesnt Match" });
   }
   try {
+    const user = await UserModel.findOne({ email });
 
-    const user = await UserModel.findOne({email});
-
-    if(!user){
-        return res.status(404).json({ success:false,message:"User Not Found" });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User Not Found" });
     }
 
-    const hashesdConfirmPass = await bcrypt.hash(confirmpass,10);
+    const hashesdConfirmPass = await bcrypt.hash(confirmpass, 10);
 
     user.password = hashesdConfirmPass;
 
-
     await user.save();
 
-    return res.status(200).json({ success:true,message:"Password Changed Successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Password Changed Successfully" });
   } catch (error) {
     console.log(error);
   }

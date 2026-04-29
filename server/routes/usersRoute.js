@@ -9,6 +9,7 @@ import {
   verifyOtp,
 } from "../controllers/usersController.js";
 import { isAuth } from "../middleware/auth.js";
+import { auth } from "../middleware/isAuth.js";
 
 const userRouter = Router();
 
@@ -19,7 +20,7 @@ userRouter.post("/verify", isAuth, emailVerification);
 userRouter.post("/forgetpassword", forgotPassword);
 userRouter.post("/otpverify/:email", verifyOtp);
 userRouter.post("/passchange/:email", passChange);
-userRouter.get("/me", isAuth, (req, res) => {
+userRouter.get("/me", auth, (req, res) => {
   res.status(200).json({ success: true, userId: req.user.id });
 });
 
