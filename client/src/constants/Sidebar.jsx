@@ -1,20 +1,32 @@
 import { BookOpenCheck, LayoutDashboard, LogOut } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { PlusCircle } from "lucide-react";
 import axios from "axios";
+import { useContext } from "react";
+import { Authcontext } from "../context/callcontext";
+import { Navigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
+  const { token, settoken, isloggedin, setisloggedin } =
+    useContext(Authcontext);
+  const navigate = useNavigate();
+
   const logoutHandler = async () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/logout`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+        { withCredentials: true },
       );
+      if (response.data.success) {
+        setisloggedin(false);
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+
+        toast.success(response.data.message, { position: "top-right" });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -68,7 +80,7 @@ const Sidebar = () => {
             hover:from-red-50/40
             hover:to-red-100/50 hover:border-r-4 hover:border-r-red-500 justify-center items-center h-15 w-full"
       >
-        <button className="flex gap-3 cursor-pointer">
+        <button onClick={logoutHandler} className="flex gap-3 cursor-pointer">
           <LogOut />
           <h2 className="text-xl">Logout</h2>
         </button>

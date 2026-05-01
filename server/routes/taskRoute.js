@@ -6,13 +6,14 @@ import {
   getTaskWithId,
   Update,
 } from "../controllers/taskController.js";
-import { isAuth } from "../middleware/auth.js";
+// import { isAuth } from "../middleware/auth.js";
+import { auth } from "../middleware/isAuth.js";
 
 const taskRouter = Router();
 
-taskRouter.post("/addtask", isAuth, addTask);
-taskRouter.patch("/update/:id", isAuth, Update);
-taskRouter.get("/getTaskWithId", isAuth, getTaskWithId);
+taskRouter.post("/addtask", auth, addTask);
+taskRouter.patch("/update/:id", auth, Update);
+taskRouter.get("/getTaskWithId",auth, getTaskWithId);
 taskRouter.delete("/deleteTask/:id", deleteTask);
 taskRouter.get("/filterTask", filterTask);
 

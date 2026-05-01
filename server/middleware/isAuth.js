@@ -15,6 +15,7 @@ export const auth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.ATOKEN);
 
     req.user = await UserModel.findById(decoded.id);
+
     next();
   } catch (error) {
     console.log(error);

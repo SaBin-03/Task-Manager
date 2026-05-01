@@ -223,21 +223,21 @@ export const passChange = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    const idUser = req.UserId;
+    const userId = req.user._id;
 
-    res.cookie("Atoken", "", {
-      path: "/",
+    await UserModel.findByIdAndUpdate(userId, {
+      isloggedin: false,
+    });
+    res.clearCookie("Atoken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      maxAge: 0,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
-    await UserModel.findByIdAndUpdate(idUser, { isloggedin: false });
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Logedout successfully" });
+    return res.status(200).json({
+      success: true,
+      message: "Logout successfully",
+    });
   } catch (error) {
     console.log(error);
   }

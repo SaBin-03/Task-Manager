@@ -1,11 +1,12 @@
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Authcontext } from "../context/callcontext";
 
 const Register = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [isvisible, setisvisible] = useState(false);
   const [users, setusers] = useState({
     name: "",
@@ -24,7 +25,8 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/register`,users,
+        `${import.meta.env.VITE_BACKEND_URL}/api/register`,
+        users,
         {
           withCredentials: true,
         },
@@ -32,7 +34,7 @@ const Register = () => {
       if (response.data.success) {
         toast.success(response.data.message, { position: "top-right" });
         setTimeout(() => {
-            navigate("/verify-email");
+          navigate("/verify-email");
         }, 2000);
       }
     } catch (error) {

@@ -1,4 +1,4 @@
-import { taskModel } from "../models/taskModel.js";
+import { taskModel } from "../models/usersModel.js";
 
 export const addTask = async (req, res) => {
   const { title, description, duedate } = req.body;
@@ -12,7 +12,7 @@ export const addTask = async (req, res) => {
       title,
       description,
       duedate,
-      userid: req.UserId,
+      userid: req.user._id,
     });
 
     await newTask.save();
@@ -48,24 +48,30 @@ export const Update = async (req, res) => {
 };
 
 export const getTaskWithId = async (req, res) => {
-  const userid = req.UserId;
+  const { userid } = req.params;
+
   try {
-    const task = await taskModel.find({ userid });
-    if (!task) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Task not found" });
+    const tasks = await taskModel.find({ userId: userid });
+
+    if (!tasks || tasks.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
     }
 
-    return res.status(200).json({ success: true, task });
+    return res.status(200).json({
+      success: true,
+      tasks,
+    });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
-
 export const deleteTask = async (req, res) => {
   const { id } = req.params;
   try {
