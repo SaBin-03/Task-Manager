@@ -4,12 +4,18 @@ import { Authcontext } from "../context/callcontext";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import { ChartBarDecreasing, CircleCheck, Clock4 } from "lucide-react";
+import {
+  AlarmClockOff,
+  ChartBarDecreasing,
+  CircleCheck,
+  Clock4,
+} from "lucide-react";
 
 const DashComponent = () => {
   const [totalTask, settotalTask] = useState(0);
   const [progress, setprogress] = useState(0);
   const [completed, setcompleted] = useState(0);
+  const [overdue, setoverdue] = useState(0);
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-US", {
@@ -34,14 +40,19 @@ const DashComponent = () => {
           const tTask = response.data.tasks;
           settotalTask(tTask.length);
           const pendingCount = tTask.filter(
-            (task) => task.status === "pending",
+            (task) => task.status === "Pending",
           ).length;
           const completedCount = tTask.filter(
-            (task) => task.status === "completed",
+            (task) => task.status === "Completed",
           ).length;
+          const overdueCount = tTask.filter((task) => {
+            const due = new Date(task.duedate);
+            return due < today && task.status !== "Completed";
+          }).length;
 
           setprogress(pendingCount);
           setcompleted(completedCount);
+          setoverdue(overdueCount);
         }
       } catch (error) {
         console.log(error);
@@ -84,7 +95,13 @@ const DashComponent = () => {
               <h2 className="text-3xl font-bold">{completed}</h2>
             </div>
           </div>
-          <div className="col-span-1 bg-white m-2 rounded-2xl">4</div>
+          <div className="col-span-1 bg-white m-2 rounded-2xl p-5 flex  flex-col gap-4">
+            <AlarmClockOff color="#f42525" size={"35px"} />
+            <div className="flex justify-cennter item-center flex-col gap-4">
+              <h2 className="text-slate-600 text-2xl">Overdue</h2>
+              <h2 className="text-3xl font-bold">{overdue}</h2>
+            </div>
+          </div>
         </div>
         <div className="h-full w-[50%]  m-3 rounded-2xl"></div>
       </div>
