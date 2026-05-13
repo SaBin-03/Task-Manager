@@ -1,4 +1,4 @@
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -6,8 +6,9 @@ import toast from "react-hot-toast";
 import { Authcontext } from "../context/callcontext";
 
 const Login = () => {
-    const { isloggedin,setisloggedin } = useContext(Authcontext);
+  const { isloggedin, setisloggedin } = useContext(Authcontext);
   const navigate = useNavigate();
+  const [isloading, setisloading] = useState(false);
   const [isvisible, setisvisible] = useState(false);
   const [users, setusers] = useState({
     name: "",
@@ -22,28 +23,31 @@ const Login = () => {
   };
 
   const submitHandler = async (e) => {
+    setisloading(true);
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/login`,
-        users,
-        {
-          withCredentials: true,
-        },
-      );
-      if (response.data.success) {
-        setisloggedin(true);
-        const { name, email,token } = response.data.regsiteredUser;
-        const safeUser = { name, email};
-        localStorage.setItem("Atoken",token);
+        const response = await axios.post(
+            `${import.meta.env.VITE_BACKEND_URL}/api/login`,
+            users,
+            {
+                withCredentials: true,
+            },
+        );
+        if (response.data.success) {
+          setisloggedin(true);
+        const { name, email, token } = response.data.regsiteredUser;
+        const safeUser = { name, email };
+        localStorage.setItem("Atoken", token);
         localStorage.setItem("user", JSON.stringify(safeUser));
         toast.success(response.data.message, { position: "top-right" });
         setTimeout(() => {
           navigate("/dashboard");
-        }, 1000);
+        }, 2000);
       }
+      setisloading(false);
     } catch (error) {
+      setisloading(false);
       toast.error(error.response?.data?.message || "Login failed", {
         position: "top-right",
       });
@@ -97,6 +101,7 @@ const Login = () => {
                   placeholder="*********"
                 />
                 <button
+                type="button"
                   onClick={() => setisvisible(!isvisible)}
                   className="absolute right-2 top-11 cursor-pointer"
                 >
@@ -105,10 +110,17 @@ const Login = () => {
               </div>
               <div>
                 <button
-                  className="h-15 rounded-2xl text-white shadow-md shadow-blue-500/20  w-full bg-blue-600 cursor-pointer hover:bg-blue-700 active:scale-95 transition-all font-space "
+                  className="h-15 rounded-2xl text-white shadow-md flex justify-center items-center  shadow-blue-500/20  w-full bg-blue-600 cursor-pointer hover:bg-blue-700 active:scale-95 transition-all font-space "
                   type="submit"
                 >
-                  Submit
+                  {isloading ? (
+                    <div className="flex items-center gap-2">
+                      <LoaderCircle className="animate-spin" size={20} />
+                      <h2 className="font-sans">Processing...</h2>
+                    </div>
+                  ) : (
+                    <h2 className="font-sans">Submit</h2>
+                  )}
                 </button>
               </div>
               <div className="place-items-center">

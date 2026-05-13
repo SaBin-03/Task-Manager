@@ -1,4 +1,4 @@
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,6 +8,7 @@ import { Authcontext } from "../context/callcontext";
 const Register = () => {
   const navigate = useNavigate();
   const [isvisible, setisvisible] = useState(false);
+  const [isloading, setisloading] = useState(false);
   const [users, setusers] = useState({
     name: "",
     email: "",
@@ -24,6 +25,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
+      setisloading(true);
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/register`,
         users,
@@ -37,7 +39,9 @@ const Register = () => {
           navigate("/verify-email");
         }, 2000);
       }
+      setisloading(false);
     } catch (error) {
+      setisloading(false);
       toast.error(error.response?.data?.message || "Registration failed", {
         position: "top-right",
       });
@@ -106,6 +110,7 @@ const Register = () => {
                   placeholder="*********"
                 />
                 <button
+                type="button"
                   onClick={() => setisvisible(!isvisible)}
                   className="absolute right-2 top-11 cursor-pointer"
                 >
@@ -114,10 +119,17 @@ const Register = () => {
               </div>
               <div>
                 <button
-                  className="h-15 rounded-2xl text-white shadow-md shadow-blue-500/20  w-full bg-blue-600 cursor-pointer hover:bg-blue-700 active:scale-95 transition-all font-space "
+                  className="h-15 rounded-2xl text-white flex justify-center items-center shadow-md shadow-blue-500/20  w-full bg-blue-600 cursor-pointer hover:bg-blue-700 active:scale-95 transition-all font-space "
                   type="submit"
                 >
-                  Submit
+                  {isloading ? (
+                    <div className="flex items-center gap-2">
+                      <LoaderCircle className="animate-spin" size={20} />
+                      <h2 className="font-sans">Processing...</h2>
+                    </div>
+                  ) : (
+                    <h2 className="font-sans">Submit</h2>
+                  )}
                 </button>
               </div>
               <div className="place-items-center">

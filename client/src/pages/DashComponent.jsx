@@ -103,7 +103,20 @@ const DashComponent = () => {
             </div>
           </div>
         </div>
-        <div className="h-full w-[50%]  m-3 rounded-2xl"></div>
+        <div className="h-full w-[50%] m-3 rounded-2xl bg-white p-10 flex flex-col justify-between overflow-hidden">
+          {/* Quote Section */}
+          <div>
+            <h1 className="text-7xl text-blue-500 leading-none">“</h1>
+
+            <p className="text-3xl leading-relaxed text-slate-600 mt-4">
+              Great things are done by a series of small things brought
+              together. Stay organized, stay focused, and keep pushing forward —
+              every task you complete brings you closer to your goals.
+            </p>
+
+            <div className="w-16 h-1 bg-blue-400 rounded-full mt-8"></div>
+          </div>
+        </div>
       </div>
     </div>
   );

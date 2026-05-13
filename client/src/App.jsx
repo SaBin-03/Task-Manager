@@ -8,9 +8,9 @@ import Verify from "./components/Verify";
 import Dashboard from "./layout/Dashboard";
 import ProtectedRoute from "./context/ProtectedRoute";
 import DashComponent from "./pages/DashComponent";
-import DashComponentTask from "./pages/DashComponentTask";
-import AddDash from "./layout/AddDash";
 import TaskLedgerLayout from "./layout/TaskLedgerLayout";
+import TaskEdit from "./layout/TaskEdit";
+import TaskAdd from "./layout/TaskAdd";
 
 const App = () => {
   const route = createBrowserRouter([
@@ -59,18 +59,26 @@ const App = () => {
       ),
     },
     {
-      path: "/dashCompTask",
-      element: (
-        <ProtectedRoute>
-          <AddDash />
-        </ProtectedRoute>
-      ),
-    },
-    {
       path: "/dashCompTaskLedger",
       element: (
         <ProtectedRoute>
           <TaskLedgerLayout />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/dashCompTaskEditSection/:id",
+      element: (
+        <ProtectedRoute>
+          <TaskEdit />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/dashCompTaskAddSection",
+      element: (
+        <ProtectedRoute>
+          <TaskAdd />
         </ProtectedRoute>
       ),
     },

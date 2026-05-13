@@ -106,3 +106,17 @@ export const filterTask = async (req, res) => {
     console.log(error);
   }
 };
+
+
+export const getspecifictask = async (req,res) => {
+    const {id} = req.params;
+    try {
+        const task = await taskModel.findById(id);
+        if(!task){
+            return res.status(404).json({success : false , message : "Task Not Found"});
+        }
+        return res.status(200).json({success : true , task});
+    } catch (error) {
+        console.log(error);
+    }
+}
